@@ -7,7 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-html_path = os.path.join(os.path.dirname(__file__), "math_practice.html")
+html_path = os.path.join(os.path.dirname(__file__), "Math Review Engine.html")
 
 with open(html_path, "r", encoding="utf-8") as f:
     html_content = f.read()
