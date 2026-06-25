@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Practice — Grades 7/8</title>
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --page: #f7f6f1;
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --green: #16a34a;
+    --green-soft: #dcfce7;
+    --red: #dc2626;
+    --red-soft: #fee2e2;
+    --amber: #d97706;
+    --amber-soft: #fef3c7;
+    --border: #d1cfc7;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --ch1: #7c3aed; --ch1s: #ede9fe;
+    --ch2: #0891b2; --ch2s: #cffafe;
+    --ch3: #16a34a; --ch3s: #dcfce7;
+    --ch4: #dc2626; --ch4s: #fee2e2;
+    --ch5: #d97706; --ch5s: #fef3c7;
+    --ch6: #2563eb; --ch6s: #dbeafe;
+    --ch7: #db2777; --ch7s: #fce7f3;
+    --ch8: #059669; --ch8s: #d1fae5;
+    --ch9: #7c3aed; --ch9s: #f3e8ff;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--page);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  #app-header {
+    background: var(--ink);
+    color: white;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 56px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  #app-header h1 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; flex:1; }
+  #app-header span { font-size: 0.75rem; color: #94a3b8; }
+  #home-btn {
+    background: none; border: 1px solid #475569; color: #cbd5e1;
+    padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.8rem;
+    transition: all 0.15s;
+  }
+  #home-btn:hover { background: #1e293b; color: white; }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── HOME ── */
+  #home-screen { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .home-hero {
+    text-align: center;
+    padding: 2.5rem 1rem 2rem;
+  }
+  .home-hero h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.04em; color: var(--ink); }
+  .home-hero p { color: var(--muted); margin-top: 0.5rem; font-size: 1.05rem; }
+
+  .final-exam-banner {
+    background: var(--ink);
+    color: white;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .final-exam-banner h3 { font-size: 1.1rem; font-weight: 700; }
+  .final-exam-banner p { font-size: 0.85rem; color: #94a3b8; }
+  .btn-final {
+    background: white; color: var(--ink);
+    border: none; padding: 0.65rem 1.4rem; border-radius: 8px;
+    font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    white-space: nowrap;
+  }
+  .btn-final:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+  .chapters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .chapter-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--ch-color);
+  }
+  .chapter-card:hover {
+    border-color: var(--ch-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  }
+  .chapter-num {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ch-color);
+    margin-bottom: 0.35rem;
+  }
+  .chapter-card h3 { font-size: 1rem; font-weight: 700; color: var(--ink); }
+  .chapter-card p { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+  .chapter-topics { margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.3rem; }
+  .topic-chip {
+    font-size: 0.7rem;
+    background: var(--ch-soft);
+    color: var(--ch-color);
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+
+  /* ── CHAPTER SCREEN ── */
+  #chapter-screen { max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .ch-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .ch-badge {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: var(--ch-color);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .ch-title h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; }
+  .ch-title p { font-size: 0.85rem; color: var(--muted); }
+
+  .unit-test-btn-wrap { margin-bottom: 1.5rem; }
+  .btn-unit-test {
+    width: 100%;
+    background: var(--ink); color: white;
+    border: none; padding: 0.85rem 1.5rem;
+    border-radius: 10px; cursor: pointer;
+    font-weight: 700; font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.15s;
+  }
+  .btn-unit-test:hover { background: #2d3a52; }
+  .btn-unit-test .arrow { font-size: 1.2rem; }
+
+  .subtopics-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .subtopic-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.15s;
+  }
+  .subtopic-card:hover {
+    border-color: var(--ch-color);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+  }
+  .subtopic-info h4 { font-size: 0.95rem; font-weight: 600; }
+  .subtopic-info p { font-size: 0.78rem; color: var(--muted); margin-top: 0.1rem; }
+  .subtopic-arrow { color: var(--muted); font-size: 1.1rem; }
+
+  /* ── QUIZ CONFIG ── */
+  #config-screen { max-width: 600px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .config-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+  }
+  .config-card h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.25rem; }
+  .config-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .config-option { margin-bottom: 1.25rem; }
+  .config-option label {
+    display: block;
+    font-size: 0.85rem; font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .count-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .count-btn {
+    padding: 0.45rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .count-btn.active, .count-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .btn-start {
+    width: 100%;
+    background: var(--accent); color: white;
+    border: none; padding: 0.85rem;
+    border-radius: 10px; cursor: pointer;
+    font-weight: 700; font-size: 1rem;
+    margin-top: 0.5rem;
+    transition: background 0.15s;
+  }
+  .btn-start:hover { background: #1d4ed8; }
+
+  /* ── QUIZ SCREEN ── */
+  #quiz-screen { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .quiz-progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+  }
+  .quiz-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .quiz-meta span { font-size: 0.82rem; color: var(--muted); font-weight: 600; }
+  .quiz-score-live {
+    display: flex; gap: 0.75rem;
+  }
+  .score-pill {
+    font-size: 0.78rem; font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+  }
+  .score-pill.correct { background: var(--green-soft); color: var(--green); }
+  .score-pill.wrong { background: var(--red-soft); color: var(--red); }
+
+  .question-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1.75rem;
+  }
+  .question-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+  .question-hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+    background: var(--amber-soft);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* Multiple choice */
+  .choices { display: flex; flex-direction: column; gap: 0.6rem; }
+  .choice-btn {
+    width: 100%;
+    text-align: left;
+    padding: 0.85rem 1.1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .choice-btn.correct-ans { border-color: var(--green); background: var(--green-soft); color: var(--green); }
+  .choice-btn.wrong-ans { border-color: var(--red); background: var(--red-soft); color: var(--red); }
+  .choice-btn:disabled { cursor: default; }
+  .choice-letter {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .choice-btn.correct-ans .choice-letter { background: var(--green); color: white; }
+  .choice-btn.wrong-ans .choice-letter { background: var(--red); color: white; }
+
+  /* Short answer */
+  .answer-input-wrap { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .answer-input {
+    flex: 1;
+    min-width: 160px;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .answer-input:focus { border-color: var(--accent); }
+  .answer-input.correct { border-color: var(--green); background: var(--green-soft); }
+  .answer-input.wrong { border-color: var(--red); background: var(--red-soft); }
+  .btn-submit {
+    padding: 0.75rem 1.5rem;
+    background: var(--accent); color: white;
+    border: none; border-radius: 10px;
+    font-weight: 700; font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-submit:hover { background: #1d4ed8; }
+  .btn-submit:disabled { background: var(--border); cursor: default; }
+
+  .feedback-box {
+    margin-top: 1rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .feedback-box.correct { background: var(--green-soft); color: var(--green); }
+  .feedback-box.wrong { background: var(--red-soft); color: var(--red); }
+  .feedback-box strong { font-weight: 700; }
+
+  .quiz-actions {
+    display: flex; gap: 0.6rem; margin-top: 1.25rem; justify-content: flex-end;
+  }
+  .btn-next {
+    padding: 0.7rem 1.5rem;
+    background: var(--ink); color: white;
+    border: none; border-radius: 10px;
+    font-weight: 700; font-size: 0.9rem;
+    cursor: pointer;
+    display: none;
+    transition: background 0.15s;
+  }
+  .btn-next:hover { background: #2d3a52; }
+  .btn-skip {
+    padding: 0.7rem 1.2rem;
+    background: white; color: var(--muted);
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-weight: 600; font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-skip:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ── RESULTS ── */
+  #results-screen { max-width: 650px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .results-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+  }
+  .results-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
+  .results-card h2 { font-size: 1.6rem; font-weight: 800; }
+  .results-card p { color: var(--muted); margin-top: 0.25rem; }
+  .score-circle {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    border: 5px solid var(--accent);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 1.5rem auto;
+  }
+  .score-pct { font-size: 1.8rem; font-weight: 900; color: var(--accent); }
+  .score-label { font-size: 0.7rem; color: var(--muted); font-weight: 600; }
+  .score-detail {
+    display: flex; justify-content: center; gap: 2rem;
+    margin: 1rem 0 1.5rem;
+  }
+  .score-detail div { text-align: center; }
+  .score-detail .num { font-size: 1.4rem; font-weight: 800; }
+  .score-detail .lbl { font-size: 0.75rem; color: var(--muted); }
+  .results-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+  .btn-retry { padding: 0.7rem 1.5rem; background: var(--accent); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+  .btn-review { padding: 0.7rem 1.5rem; background: white; color: var(--ink); border: 1.5px solid var(--border); border-radius: 10px; font-weight: 600; cursor: pointer; }
+  .btn-home-res { padding: 0.7rem 1.5rem; background: white; color: var(--ink); border: 1.5px solid var(--border); border-radius: 10px; font-weight: 600; cursor: pointer; }
+
+  /* Review list */
+  .review-list { margin-top: 1.5rem; text-align: left; }
+  .review-item {
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 0.6rem;
+    border-left: 4px solid;
+  }
+  .review-item.correct { border-color: var(--green); background: var(--green-soft); }
+  .review-item.wrong { border-color: var(--red); background: var(--red-soft); }
+  .review-item .rv-q { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .review-item .rv-a { font-size: 0.82rem; color: var(--muted); }
+  .review-item.wrong .rv-a { color: var(--red); }
+  .review-item .rv-correct { font-size: 0.82rem; color: var(--green); margin-top: 0.15rem; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .home-hero h2 { font-size: 1.5rem; }
+    .chapters-grid { grid-template-columns: 1fr; }
+    .question-text { font-size: 1rem; }
+    .final-exam-banner { flex-direction: column; }
+    .score-detail { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header id="app-header">
+  <h1>📐 Math Practice</h1>
+  <span id="header-crumb"></span>
+  <button id="home-btn" onclick="showHome()">⌂ Home</button>
+</header>
+
+<!-- HOME -->
+<div id="home-screen" class="screen active">
+  <div id="home-screen-inner">
+    <div class="home-hero">
+      <h2>Math Practice Centre</h2>
+      <p>Choose a chapter to practise, or jump straight into a full exam.</p>
+    </div>
+    <div class="final-exam-banner">
+      <div>
+        <h3>🎓 Final Exam</h3>
+        <p>Mixed questions from all 9 chapters</p>
+      </div>
+      <button class="btn-final" onclick="startFinalExam()">Start Final Exam →</button>
+    </div>
+    <div class="chapters-grid" id="chapters-grid"></div>
+  </div>
+</div>
+
+<!-- CHAPTER -->
+<div id="chapter-screen" class="screen">
+  <div class="ch-header">
+    <div class="ch-badge" id="ch-badge"></div>
+    <div class="ch-title">
+      <h2 id="ch-title"></h2>
+      <p id="ch-subtitle"></p>
+    </div>
+  </div>
+  <div class="unit-test-btn-wrap">
+    <button class="btn-unit-test" id="unit-test-btn">
+      <span>📋 Unit Test — All Topics</span>
+      <span class="arrow">→</span>
+    </button>
+  </div>
+  <div class="subtopics-list" id="subtopics-list"></div>
+</div>
+
+<!-- CONFIG -->
+<div id="config-screen" class="screen">
+  <div class="config-card">
+    <h2 id="config-title"></h2>
+    <p id="config-desc"></p>
+    <div class="config-option">
+      <label>Number of Questions</label>
+      <div class="count-buttons" id="count-buttons">
+        <button class="count-btn" onclick="setCount(5)" data-v="5">5</button>
+        <button class="count-btn active" onclick="setCount(10)" data-v="10">10</button>
+        <button class="count-btn" onclick="setCount(15)" data-v="15">15</button>
+        <button class="count-btn" onclick="setCount(20)" data-v="20">20</button>
+        <button class="count-btn" onclick="setCount(30)" data-v="30">30</button>
+      </div>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">Start Practice →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-screen" class="screen">
+  <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="progress-fill"></div></div>
+  <div class="quiz-meta">
+    <span id="q-counter"></span>
+    <div class="quiz-score-live">
+      <span class="score-pill correct" id="live-correct">✓ 0</span>
+      <span class="score-pill wrong" id="live-wrong">✗ 0</span>
+    </div>
+  </div>
+  <div class="question-card">
+    <div class="question-hint" id="q-hint"></div>
+    <div class="question-text" id="q-text"></div>
+    <div id="q-input-area"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+  </div>
+  <div class="quiz-actions">
+    <button class="btn-skip" id="btn-skip" onclick="skipQuestion()">Skip</button>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Next Question →</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results-screen" class="screen">
+  <div class="results-card">
+    <div class="results-emoji" id="res-emoji">🎉</div>
+    <h2 id="res-title"></h2>
+    <p id="res-subtitle"></p>
+    <div class="score-circle">
+      <span class="score-pct" id="res-pct"></span>
+      <span class="score-label">Score</span>
+    </div>
+    <div class="score-detail">
+      <div><div class="num" id="res-correct" style="color:var(--green)"></div><div class="lbl">Correct</div></div>
+      <div><div class="num" id="res-total"></div><div class="lbl">Total</div></div>
+      <div><div class="num" id="res-wrong" style="color:var(--red)"></div><div class="lbl">Incorrect</div></div>
+    </div>
+    <div class="results-actions">
+      <button class="btn-retry" onclick="retryQuiz()">🔁 Try Again</button>
+      <button class="btn-review" onclick="showReview()">📋 Review Answers</button>
+      <button class="btn-home-res" onclick="showHome()">⌂ Home</button>
+    </div>
+    <div class="review-list" id="review-list" style="display:none"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  UTILITY — Random number helpers
+// ══════════════════════════════════════════════════════
+const ri = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const rf = (a, b, d = 1) => parseFloat((Math.random() * (b - a) + a).toFixed(d));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = ri(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+const lcm = (a, b) => a * b / gcd(a, b);
+function simplify(n, d) { const g = gcd(Math.abs(n), Math.abs(d)); return [n / g, d / g]; }
+function frac(n, d) { const [sn, sd] = simplify(n, d); return sd === 1 ? `${sn}` : `${sn}/${sd}`; }
+function fracTex(n, d) { const [sn, sd] = simplify(n, d); return sd === 1 ? `${sn}` : `${sn}/${sd}`; }
+function approx(a, b, tol = 0.02) { return Math.abs(a - b) <= tol; }
+
+// Check if answer matches any acceptable form
+function checkAnswer(userAns, correctAns) {
+  const u = userAns.toString().trim().toLowerCase().replace(/\s+/g, ' ');
+  const c = correctAns.toString().trim().toLowerCase().replace(/\s+/g, ' ');
+  if (u === c) return true;
+  // Numeric check with tolerance
+  const un = parseFloat(u); const cn = parseFloat(c);
+  if (!isNaN(un) && !isNaN(cn) && approx(un, cn)) return true;
+  // Fraction check: convert both to decimals
+  const fracToNum = s => { const m = s.match(/^(-?\d+)\s*\/\s*(\d+)$/); return m ? parseInt(m[1]) / parseInt(m[2]) : NaN; };
+  const uf = fracToNum(u); const cf = fracToNum(c);
+  if (!isNaN(uf) && !isNaN(cf) && approx(uf, cf)) return true;
+  if (!isNaN(uf) && !isNaN(cn) && approx(uf, cn)) return true;
+  if (!isNaN(un) && !isNaN(cf) && approx(un, cf)) return true;
+  // Mixed number check: "2 1/3" 
+  const mixToNum = s => { const m = s.match(/^(-?\d+)\s+(\d+)\s*\/\s*(\d+)$/); if (!m) return NaN; const w = parseInt(m[1]); const n = parseInt(m[2]); const d = parseInt(m[3]); return w < 0 ? w - n/d : w + n/d; };
+  const um = mixToNum(u); const cm = mixToNum(c);
+  if (!isNaN(um) && !isNaN(cm) && approx(um, cm)) return true;
+  if (!isNaN(um) && !isNaN(cn) && approx(um, cn)) return true;
+  if (!isNaN(un) && !isNaN(cm) && approx(un, cm)) return true;
+  if (!isNaN(uf) && !isNaN(cm) && approx(uf, cm)) return true;
+  return false;
+}
+
+// ══════════════════════════════════════════════════════
+//  QUESTION BANKS — each returns {text, type, choices?, answer, hint?, explain?}
+// ══════════════════════════════════════════════════════
+
+const QB = {};
+
+// ─── CHAPTER 1: PERCENTS ───────────────────────────────
+
+QB.ch1_s1 = () => { // Convert between percents, fractions, decimals
+  const t = ri(1,4);
+  if (t===1) { // percent→decimal
+    const p = ri(1,99); return { text: `Convert ${p}% to a decimal.`, answer: (p/100).toFixed(2), hint: 'Divide by 100 (move decimal 2 places left).' };
+  } else if (t===2) { // decimal→percent
+    const d = rf(0.01, 0.99, 2); return { text: `Convert ${d} to a percent.`, answer: `${(d*100).toFixed(0)}%`, hint: 'Multiply by 100 and add the % sign.' };
+  } else if (t===3) { // percent→fraction
+    const opts = [[1,2],[1,4],[3,4],[1,5],[2,5],[3,5],[4,5],[1,10],[3,10],[7,10],[1,8],[3,8]];
+    const [n,d] = pick(opts); const p = Math.round(n/d*100);
+    return { text: `Convert ${p}% to a fraction in simplest form.`, answer: frac(n,d), hint: 'Write as a fraction over 100, then simplify.' };
+  } else { // fraction→percent
+    const opts = [[1,2,50],[1,4,25],[3,4,75],[1,5,20],[2,5,40],[3,5,60],[1,8,12.5],[3,8,37.5],[1,3,33.3],[2,3,66.7]];
+    const [n,d,p] = pick(opts);
+    return { text: `Convert ${n}/${d} to a percent. Round to 1 decimal if needed.`, answer: `${p}%`, hint: 'Divide numerator by denominator, multiply by 100.' };
+  }
+};
+
+QB.ch1_s2 = () => { // Percents > 100% and < 1%
+  const t = ri(1,4);
+  if (t===1) {
+    const p = pick([125,150,175,200,250,300,120,140]);
+    return { text: `Convert ${p}% to a decimal.`, answer: (p/100).toFixed(2), hint: 'Percents > 100% mean more than 1 whole. Divide by 100.' };
+  } else if (t===2) {
+    const d = pick([1.25,1.5,2.0,2.5,3.0,1.75,1.2]);
+    return { text: `Convert ${d} to a percent.`, answer: `${d*100}%`, hint: 'Multiply by 100.' };
+  } else if (t===3) {
+    const p = pick([0.5,0.25,0.1,0.75,0.01]);
+    return { text: `Convert ${p}% to a decimal.`, answer: (p/100).toFixed(4), hint: 'Percents < 1% are very small — still divide by 100.' };
+  } else {
+    const d = pick([0.005,0.001,0.0025,0.0075]);
+    return { text: `Convert ${d} to a percent.`, answer: `${(d*100).toFixed(2)}%`, hint: 'Multiply by 100, even if the result is less than 1%.' };
+  }
+};
+
+QB.ch1_s3 = () => { // Find a percent of a number
+  const p = pick([5,10,15,20,25,30,40,50,60,75,80,90,12,35,45]);
+  const n = ri(20,500);
+  const ans = (p/100)*n;
+  return { text: `Find ${p}% of ${n}.`, answer: ans % 1 === 0 ? `${ans}` : ans.toFixed(2), hint: 'Multiply the percent (as a decimal) by the number.' };
+};
+
+QB.ch1_s4 = () => { // Find the whole, part, or percent
+  const t = ri(1,3);
+  const whole = ri(50,400); const p = pick([10,15,20,25,30,40,50]);
+  const part = Math.round(whole * p / 100);
+  if (t===1) return { text: `${part} is ${p}% of what number?`, answer: `${whole}`, hint: 'Divide the part by the percent (as a decimal): part ÷ percent.' };
+  if (t===2) { const part2 = ri(10,200); const pct = Math.round(part2/whole*100); const whole2 = Math.round(part2/(pct/100));
+    return { text: `${part2} is what percent of ${whole2}?`, answer: `${Math.round(part2/whole2*100)}%`, hint: 'Divide the part by the whole, then multiply by 100.' }; }
+  return { text: `What is ${p}% of ${whole}?`, answer: `${part}`, hint: 'Multiply: whole × (percent ÷ 100).' };
+};
+
+QB.ch1_s5 = () => { // Percent increase and decrease
+  const orig = ri(50,300); const pct = pick([5,10,15,20,25,30,40,50]);
+  const isInc = Math.random() > 0.5;
+  const newVal = isInc ? orig*(1+pct/100) : orig*(1-pct/100);
+  const t = ri(1,3);
+  if (t===1) return { text: `A value increases from ${orig} to ${orig+orig*pct/100}. What is the percent increase?`, answer: `${pct}%`, hint: '(new − old) ÷ old × 100' };
+  if (t===2) { const before = ri(60,400); const after = Math.round(before*(1+pct/100));
+    return { text: `A price increases by ${pct}% from $${before}. What is the new price?`, answer: `$${after}`, hint: 'New = original × (1 + percent)' }; }
+  const before2 = ri(80,500); const after2 = Math.round(before2*(1-pct/100));
+  return { text: `A quantity of ${before2} decreases by ${pct}%. What is the new quantity?`, answer: `${after2}`, hint: 'New = original × (1 − percent)' };
+};
+
+QB.ch1_s6 = () => { // Discounts, taxes, tips, markups
+  const price = ri(10,200); const pct = pick([5,8,10,12,13,15,20,25]);
+  const t = ri(1,5);
+  if (t===1) { const disc = Math.round(price*pct/100); return { text: `A jacket costs $${price}. It is on sale for ${pct}% off. What is the sale price?`, answer: `$${price-disc}`, hint: 'Sale price = original − discount amount.' }; }
+  if (t===2) { const tax = +(price*pct/100).toFixed(2); return { text: `A book costs $${price}. Tax is ${pct}%. What is the total cost?`, answer: `$${(price+tax).toFixed(2)}`, hint: 'Total = price × (1 + tax rate).' }; }
+  if (t===3) { const bill = ri(20,150); const tip = +(bill*pct/100).toFixed(2); return { text: `A restaurant bill is $${bill}. You leave a ${pct}% tip. How much is the tip?`, answer: `$${tip.toFixed(2)}`, hint: 'Tip = bill × tip rate.' }; }
+  if (t===4) { const cost = ri(10,100); const markup = pick([20,30,40,50,60,100]); return { text: `A store buys an item for $${cost} and marks it up ${markup}%. What is the selling price?`, answer: `$${Math.round(cost*(1+markup/100))}`, hint: 'Selling price = cost × (1 + markup rate).' }; }
+  const sale = ri(20,200); const pct2 = pick([10,20,25,30,40,50]);
+  return { text: `An item is discounted ${pct2}% and costs $${Math.round(sale*(1-pct2/100))} on sale. What was the original price?`, answer: `$${sale}`, hint: 'Original = sale price ÷ (1 − discount rate).' };
+};
+
+// ─── CHAPTER 2: SQUARES, CUBES, PYTHAGOREAN THEOREM ──
+
+QB.ch2_s1 = () => { // Square and cube numbers
+  const t = ri(1,4);
+  if (t===1) { const n = ri(2,15); return { text: `What is ${n}² (${n} squared)?`, answer: `${n*n}` }; }
+  if (t===2) { const n = ri(2,10); return { text: `What is ${n}³ (${n} cubed)?`, answer: `${n*n*n}` }; }
+  if (t===3) { const n = ri(2,15); const sq = n*n; return { text: `${sq} = n². What is n?`, answer: `${n}`, hint: 'Find the square root.' }; }
+  const n = ri(2,8); const cb = n*n*n; return { text: `${cb} = n³. What is n?`, answer: `${n}`, hint: 'Find the cube root.' };
+};
+
+QB.ch2_s2 = () => { // Perfect squares and cubes
+  const t = ri(1,3);
+  if (t===1) {
+    const perfect = [1,4,9,16,25,36,49,64,81,100,121,144]; const notPerf = [2,3,5,6,7,8,10,11,12,15,18,20,24];
+    const opts = shuffle([...shuffle(perfect).slice(0,3), ...shuffle(notPerf).slice(0,1)]);
+    const ans = opts.filter(n => perfect.includes(n)).sort((a,b)=>a-b).join(', ');
+    return { text: `Which of these are perfect squares? ${opts.join(', ')}`, type:'mc',
+      choices: [ans, opts.join(', '), opts.filter(n=>!perfect.includes(n)).join(', '), 'None of them'],
+      answer: ans, hint: 'A perfect square is n × n for a whole number n.' };
+  }
+  if (t===2) {
+    const n = pick([1,4,9,16,25,36,49,64,81,100]);
+    return { text: `Is ${n} a perfect square? If yes, what is its square root?`, answer: `Yes, √${n} = ${Math.sqrt(n)}`, hint: 'Try to find a whole number times itself that equals this number.' };
+  }
+  const cubes = [1,8,27,64,125,216]; const n = pick(cubes);
+  return { text: `Is ${n} a perfect cube? If yes, find the cube root.`, answer: `Yes, ∛${n} = ${Math.cbrt(n)}`, hint: 'Find a whole number × itself × itself = this number.' };
+};
+
+QB.ch2_s3 = () => { // Square roots and cube roots
+  const t = ri(1,4);
+  const perf = [1,4,9,16,25,36,49,64,81,100,121,144];
+  const cubes = [1,8,27,64,125];
+  if (t===1) { const sq = pick(perf); return { text: `√${sq} = ?`, answer: `${Math.sqrt(sq)}`, hint: 'What number times itself equals this?' }; }
+  if (t===2) { const cb = pick(cubes); return { text: `∛${cb} = ?`, answer: `${Math.cbrt(cb)}`, hint: 'What number times itself times itself equals this?' }; }
+  if (t===3) { const n = ri(2,12); return { text: `What is √${n*n}?`, answer: `${n}` }; }
+  const n = ri(2,5); return { text: `What is ∛${n*n*n}?`, answer: `${n}` };
+};
+
+QB.ch2_s4 = () => { // Estimating roots
+  const n = ri(2,99);
+  const sq = Math.sqrt(n);
+  const low = Math.floor(sq); const high = Math.ceil(sq);
+  const t = ri(1,2);
+  if (t===1) return { text: `Between which two consecutive whole numbers does √${n} lie?`, answer: `${low} and ${high}`, hint: `Find perfect squares on each side: ${low}² = ${low*low}, ${high}² = ${high*high}.` };
+  const n2 = ri(3,50);
+  const cr = Math.cbrt(n2); const lo2 = Math.floor(cr); const hi2 = Math.ceil(cr);
+  return { text: `Between which two consecutive whole numbers does ∛${n2} lie?`, answer: `${lo2} and ${hi2}`, hint: `${lo2}³ = ${lo2**3}, ${hi2}³ = ${hi2**3}.` };
+};
+
+QB.ch2_s5 = () => { // Right triangles — identify
+  const t = ri(1,2);
+  const sides = [[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10]];
+  const [a,b,c] = pick(sides);
+  if (t===1) return { text: `A triangle has sides ${a}, ${b}, and ${c}. Is it a right triangle?`, answer: 'Yes', type:'mc', choices:['Yes','No'], hint: `Check if a² + b² = c²: ${a}² + ${b}² = ${b===12?a*a+b*b:a*a+b*b}` };
+  const badSides = pick([[3,4,6],[5,6,8],[4,5,7],[2,3,4]]);
+  return { text: `A triangle has sides ${badSides[0]}, ${badSides[1]}, and ${badSides[2]}. Is it a right triangle?`, answer: 'No', type:'mc', choices:['Yes','No'], hint: `Check if a² + b² = c²: ${badSides[0]}² + ${badSides[1]}² should equal ${badSides[2]}².` };
+};
+
+QB.ch2_s6 = () => { // Pythagorean theorem concept
+  const t = ri(1,2);
+  if (t===1) return { text: `State the Pythagorean Theorem in the form: a² + b² = ?`, answer: 'c²', hint: 'In a right triangle, the sum of squares of legs equals the square of the hypotenuse.' };
+  return { text: `In a right triangle, which side is the hypotenuse?`, answer: 'The longest side, opposite the right angle.', type:'mc', choices:['The shortest side','The middle side','The longest side, opposite the right angle.','Any of the three sides'], hint: 'The hypotenuse is always opposite the 90° angle.' };
+};
+
+QB.ch2_s7 = () => { // Finding missing side lengths
+  const triples = [[3,4,5],[5,12,13],[8,15,17],[6,8,10],[9,12,15],[5,12,13]];
+  const [a,b,c] = pick(triples);
+  const t = ri(1,3);
+  if (t===1) return { text: `A right triangle has legs ${a} and ${b}. Find the hypotenuse.`, answer: `${c}`, hint: `c = √(${a}² + ${b}²)` };
+  if (t===2) return { text: `A right triangle has hypotenuse ${c} and one leg ${a}. Find the other leg.`, answer: `${b}`, hint: `b = √(c² − a²) = √(${c}² − ${a}²)` };
+  const scale = ri(2,4); return { text: `A right triangle has hypotenuse ${c*scale} and one leg ${a*scale}. Find the other leg.`, answer: `${b*scale}`, hint: `b = √(${(c*scale)**2} − ${(a*scale)**2})` };
+};
+
+// ─── CHAPTER 3: RATES AND PROPORTIONS ─────────────────
+
+QB.ch3_s1 = () => { // Ratios and equivalent ratios
+  const a = ri(2,10); const b = ri(2,10); const k = ri(2,5);
+  const t = ri(1,3);
+  if (t===1) return { text: `Write the ratio ${a*k}:${b*k} in simplest form.`, answer: `${a}:${b}`, hint: 'Divide both sides by their GCD.' };
+  if (t===2) return { text: `Are ${a}:${b} and ${a*k}:${b*k} equivalent ratios?`, answer: 'Yes', type:'mc', choices:['Yes','No'], hint: 'Multiply both parts of the first ratio by the same number.' };
+  const missing = ri(2,9); return { text: `${a}:${b} = ${a*missing}:? Find the missing value.`, answer: `${b*missing}`, hint: 'Multiply the second term by the same factor.' };
+};
+
+QB.ch3_s2 = () => { // Rates and unit rates
+  const total = ri(2,20)*10; const qty = ri(2,10);
+  const unitRate = total/qty;
+  const t = ri(1,3);
+  if (t===1) return { text: `${qty} items cost $${total}. What is the unit rate (price per item)?`, answer: `$${unitRate.toFixed(2)}`, hint: 'Unit rate = total cost ÷ number of items.' };
+  if (t===2) { const km = ri(100,500); const h = ri(2,8); return { text: `A car travels ${km} km in ${h} hours. What is the average speed in km/h?`, answer: `${(km/h).toFixed(1)} km/h`, hint: 'Speed = distance ÷ time.' }; }
+  const pages = ri(50,300); const mins = ri(10,60); return { text: `You read ${pages} pages in ${mins} minutes. How many pages per minute? Round to 2 decimal places.`, answer: `${(pages/mins).toFixed(2)}`, hint: 'Rate = pages ÷ minutes.' };
+};
+
+QB.ch3_s3 = () => { // Proportional relationships
+  const k = ri(2,8); const x1 = ri(1,6); const y1 = k*x1; const x2 = ri(7,12);
+  const t = ri(1,2);
+  if (t===1) return { text: `y is proportional to x. When x = ${x1}, y = ${y1}. What is y when x = ${x2}?`, answer: `${k*x2}`, hint: 'Find the constant of proportionality: k = y ÷ x.' };
+  const a = ri(2,5); const b = ri(3,8); return { text: `Is the table proportional? (2, ${2*a}) and (${b}, ${b*a+1}). Answer Yes or No.`, answer: 'No', type:'mc', choices:['Yes','No'], hint: 'Check if y/x is the same for all pairs.' };
+};
+
+QB.ch3_s4 = () => { // Solving proportions
+  const a = ri(2,12); const b = ri(3,15); const c = ri(2,10); const x = (b*c)/a;
+  const t = ri(1,2);
+  if (t===1 && Number.isInteger(x)) return { text: `Solve: ${a}/${b} = ${c}/x`, answer: `${x}`, hint: 'Cross multiply: a × x = b × c, then solve for x.' };
+  const p = ri(2,8); const q = ri(3,10); const r = ri(2,6); const y = Math.round((q*r)/p);
+  return { text: `Solve for n: ${p}/n = ${r}/${q}`, answer: `${Math.round((p*q)/r)}`, hint: 'Cross multiply: p × q = n × r.' };
+};
+
+QB.ch3_s5 = () => { // Scale drawings and maps
+  const scale = pick([1,2,5,10]); // 1 cm = scale km
+  const map_d = ri(3,20); const real_d = map_d * scale;
+  const t = ri(1,2);
+  if (t===1) return { text: `A map has a scale of 1 cm : ${scale} km. Two cities are ${map_d} cm apart on the map. What is the real distance?`, answer: `${real_d} km`, hint: 'Real distance = map distance × scale factor.' };
+  const real2 = ri(20,200); const s2 = pick([5,10,20,25]);
+  return { text: `A model car is built at a scale of 1:${s2}. The real car is ${real2} cm long. How long is the model?`, answer: `${(real2/s2).toFixed(1)} cm`, hint: 'Model length = real length ÷ scale.' };
+};
+
+QB.ch3_s6 = () => { // Unit conversions
+  const t = ri(1,5);
+  if (t===1) { const km = ri(1,20); return { text: `Convert ${km} km to metres.`, answer: `${km*1000} m`, hint: '1 km = 1000 m' }; }
+  if (t===2) { const cm = ri(10,500); return { text: `Convert ${cm} cm to metres.`, answer: `${(cm/100).toFixed(2)} m`, hint: '100 cm = 1 m' }; }
+  if (t===3) { const min = ri(2,12)*10; return { text: `Convert ${min} minutes to seconds.`, answer: `${min*60} s`, hint: '1 minute = 60 seconds' }; }
+  if (t===4) { const g = ri(100,5000); return { text: `Convert ${g} g to kilograms.`, answer: `${(g/1000).toFixed(3)} kg`, hint: '1000 g = 1 kg' }; }
+  const L = ri(1,10); return { text: `Convert ${L} litres to millilitres.`, answer: `${L*1000} mL`, hint: '1 L = 1000 mL' };
+};
+
+// ─── CHAPTER 4: ADDING AND SUBTRACTING FRACTIONS ──────
+
+QB.ch4_s1 = () => { // Equivalent fractions
+  const d = ri(2,8); const n = ri(1,d-1); const k = ri(2,6);
+  const t = ri(1,2);
+  if (t===1) return { text: `Write a fraction equivalent to ${n}/${d} with denominator ${d*k}.`, answer: `${n*k}/${d*k}`, hint: 'Multiply both numerator and denominator by the same number.' };
+  return { text: `Simplify ${n*k}/${d*k} to lowest terms.`, answer: frac(n,d), hint: 'Divide numerator and denominator by their GCD.' };
+};
+
+QB.ch4_s2 = () => { // Proper, improper, mixed
+  const w = ri(1,5); const n = ri(1,5); const d = ri(n+1,8);
+  const t = ri(1,3);
+  if (t===1) { const impN = w*d+n; return { text: `Convert the mixed number ${w} ${n}/${d} to an improper fraction.`, answer: `${impN}/${d}`, hint: '(whole × denominator) + numerator, over denominator.' }; }
+  if (t===2) { const big = ri(7,25); const d2 = ri(2,6); const w2 = Math.floor(big/d2); const r = big%d2; return { text: `Convert ${big}/${d2} to a mixed number.`, answer: r===0?`${w2}`:`${w2} ${r}/${d2}`, hint: 'Divide: quotient is the whole, remainder is the numerator.' }; }
+  const n2 = ri(1,4); const d2 = ri(n2+1,8); return { text: `Is ${n2}/${d2} a proper or improper fraction?`, answer:'Proper', type:'mc', choices:['Proper','Improper'], hint: 'A proper fraction has numerator < denominator.' };
+};
+
+QB.ch4_s3 = () => { // Add fractions - common denominators
+  const d = ri(2,12); const n1 = ri(1,d-1); const n2 = ri(1,d-1);
+  const sumN = n1+n2;
+  const [rn,rd] = sumN>=d ? [sumN-d, d] : simplify(sumN,d);
+  const whole = sumN >= d ? 1 : 0;
+  const ans = whole>0 ? (rn===0?`${whole}`:`${whole} ${rn}/${rd}`) : frac(sumN,d);
+  return { text: `${n1}/${d} + ${n2}/${d} = ?`, answer: ans, hint: 'Add numerators; keep the same denominator. Simplify.' };
+};
+
+QB.ch4_s4 = () => { // Add fractions - unlike denominators
+  const d1 = ri(2,8); const d2 = ri(2,8);
+  const n1 = ri(1,d1-1); const n2 = ri(1,d2-1);
+  const ld = lcm(d1,d2);
+  const sumN = n1*(ld/d1) + n2*(ld/d2);
+  const w = Math.floor(sumN/ld); const r = sumN%ld;
+  const [sn,sd] = simplify(r,ld);
+  const ans = w>0 ? (sn===0?`${w}`:`${w} ${sn}/${sd}`) : frac(r,ld);
+  return { text: `${n1}/${d1} + ${n2}/${d2} = ?`, answer: ans, hint: `Find LCD of ${d1} and ${d2}, convert, then add.` };
+};
+
+QB.ch4_s5 = () => { // Subtract fractions - common denominators
+  const d = ri(2,12); const n1 = ri(2,d-1); const n2 = ri(1,n1-1);
+  return { text: `${n1}/${d} − ${n2}/${d} = ?`, answer: frac(n1-n2,d), hint: 'Subtract numerators; keep the denominator.' };
+};
+
+QB.ch4_s6 = () => { // Subtract fractions - unlike denominators
+  let d1,d2,n1,n2,diff;
+  do { d1=ri(2,8); d2=ri(2,8); n1=ri(1,d1-1); n2=ri(1,d2-1); const ld=lcm(d1,d2); diff=n1*(ld/d1)-n2*(ld/d2); } while(diff<=0);
+  const ld=lcm(d1,d2); const diffN=n1*(ld/d1)-n2*(ld/d2);
+  return { text: `${n1}/${d1} − ${n2}/${d2} = ?`, answer: frac(diffN,ld), hint: `Find LCD of ${d1} and ${d2}, convert, then subtract.` };
+};
+
+QB.ch4_s7 = () => { // Add and subtract mixed numbers
+  const w1=ri(1,5),n1=ri(1,5),d1=ri(n1+1,8);
+  const w2=ri(1,3),n2=ri(1,4),d2=ri(n2+1,6);
+  const isAdd = Math.random()>0.4;
+  const ld=lcm(d1,d2);
+  if(isAdd){
+    const totN=n1*(ld/d1)+n2*(ld/d2); const extra=Math.floor(totN/ld); const remN=totN%ld;
+    const [sn,sd]=simplify(remN,ld); const w=w1+w2+extra;
+    const ans = sn===0?`${w}`:`${w} ${sn}/${sd}`;
+    return { text: `${w1} ${n1}/${d1} + ${w2} ${n2}/${d2} = ?`, answer: ans, hint: 'Add whole numbers separately; add fractions with LCD.' };
+  } else {
+    const big = w1>w2 || (w1===w2 && n1/d1>=n2/d2);
+    const [bw,bn,bd,sw,sn2,sd2] = big ? [w1,n1,d1,w2,n2,d2] : [w2,n2,d2,w1,n1,d1];
+    const bigN=bw*ld+bn*(ld/bd); const smN=sw*ld+sn2*(ld/sd2);
+    const diffTotal=bigN-smN; const wRes=Math.floor(diffTotal/ld); const rN=diffTotal%ld;
+    const [sn3,sd3]=simplify(rN,ld);
+    const ans2=sn3===0?`${wRes}`:`${wRes} ${sn3}/${sd3}`;
+    const [lw,ln,ld2str,rw,rn2,rd2str]=big?[w1,n1,d1,w2,n2,d2]:[w2,n2,d2,w1,n1,d1];
+    return { text: `${lw} ${ln}/${ld2str} − ${rw} ${rn2}/${rd2str} = ?`, answer: ans2, hint: 'Subtract whole numbers and fractions separately; borrow if needed.' };
+  }
+};
+
+// ─── CHAPTER 5: MULTIPLYING AND DIVIDING FRACTIONS ────
+
+QB.ch5_s1 = () => { // Multiply fractions
+  const n1=ri(1,7),d1=ri(2,9),n2=ri(1,7),d2=ri(2,9);
+  const [rn,rd]=simplify(n1*n2,d1*d2);
+  return { text: `${n1}/${d1} × ${n2}/${d2} = ?`, answer: frac(rn,rd), hint: 'Multiply numerators together, denominators together, then simplify.' };
+};
+
+QB.ch5_s2 = () => { // Multiply mixed numbers
+  const w1=ri(1,4),n1=ri(1,4),d1=ri(n1+1,6);
+  const w2=ri(1,3),n2=ri(1,3),d2=ri(n2+1,6);
+  const imp1=w1*d1+n1, imp2=w2*d2+n2;
+  const prodN=imp1*imp2, prodD=d1*d2;
+  const w=Math.floor(prodN/prodD), r=prodN%prodD;
+  const [sn,sd]=simplify(r,prodD);
+  const ans=r===0?`${w}`:`${w} ${sn}/${sd}`;
+  return { text: `${w1} ${n1}/${d1} × ${w2} ${n2}/${d2} = ?`, answer: ans, hint: 'Convert to improper fractions, multiply, convert back.' };
+};
+
+QB.ch5_s3 = () => { // Divide fractions
+  const n1=ri(1,8),d1=ri(2,10),n2=ri(1,8),d2=ri(2,10);
+  const [rn,rd]=simplify(n1*d2,d1*n2);
+  const w=Math.floor(rn/rd), r=rn%rd;
+  const [sn,sd]=simplify(r,rd);
+  const ans=r===0?`${w}`:(w>0?`${w} ${sn}/${sd}`:frac(rn,rd));
+  return { text: `${n1}/${d1} ÷ ${n2}/${d2} = ?`, answer: ans, hint: 'Keep the first fraction, change ÷ to ×, flip the second fraction.' };
+};
+
+QB.ch5_s4 = () => { // Divide mixed numbers
+  const w1=ri(1,4),n1=ri(1,4),d1=ri(n1+1,6);
+  const w2=ri(1,3),n2=ri(1,3),d2=ri(n2+1,6);
+  const imp1=w1*d1+n1, imp2=w2*d2+n2;
+  const rn=imp1*d2, rd=d1*imp2;
+  const w=Math.floor(rn/rd), r=rn%rd;
+  const [sn,sd]=simplify(r,rd);
+  const ans=r===0?`${w}`:(w>0?`${w} ${sn}/${sd}`:frac(rn,rd));
+  return { text: `${w1} ${n1}/${d1} ÷ ${w2} ${n2}/${d2} = ?`, answer: ans, hint: 'Convert to improper fractions, then multiply by the reciprocal.' };
+};
+
+QB.ch5_s5 = () => { // Reciprocals
+  const n=ri(1,9),d=ri(2,10);
+  const t=ri(1,3);
+  if(t===1) return { text:`What is the reciprocal of ${n}/${d}?`, answer:`${d}/${n}`, hint:'Flip the numerator and denominator.' };
+  if(t===2) { const w=ri(2,6),n2=ri(1,4),d2=ri(n2+1,8); const imp=w*d2+n2; return { text:`What is the reciprocal of ${w} ${n2}/${d2}?`, answer:`${d2}/${imp}`, hint:'Convert to an improper fraction first, then flip.' }; }
+  return { text:`What is the reciprocal of ${ri(2,12)}?`, answer:`1/${n}`, hint:'A whole number n can be written as n/1; its reciprocal is 1/n.' };
+};
+
+QB.ch5_s6 = () => { // Fraction word problems
+  const t=ri(1,4);
+  if(t===1){const total=ri(20,60),frac1=pick([[1,2],[1,3],[2,3],[1,4],[3,4]]);
+    return{text:`There are ${total} students. ${frac1[0]}/${frac1[1]} of them like math. How many students like math?`,answer:`${Math.round(total*frac1[0]/frac1[1])}`,hint:`Multiply: ${total} × ${frac1[0]}/${frac1[1]}`};}
+  if(t===2){const dist=ri(2,8),frac1=pick([[1,2],[1,3],[2,3],[1,4],[3,4]]);
+    return{text:`You walk ${dist} km. You have completed ${frac1[0]}/${frac1[1]} of your journey. How long is the full journey?`,answer:`${(dist/frac1[0]*frac1[1]).toFixed(2)} km`,hint:`Full journey = distance ÷ fraction completed.`};}
+  if(t===3){const perDay=pick([[1,4],[1,3],[2,3],[3,4],[1,2]]);const days=ri(3,12);
+    return{text:`You practise piano ${perDay[0]}/${perDay[1]} of an hour per day. How many hours in ${days} days?`,answer:frac(perDay[0]*days,perDay[1]),hint:`Multiply: ${perDay[0]}/${perDay[1]} × ${days}`};}
+  const len=ri(2,6);const cut=pick([[1,2],[1,3],[1,4],[2,3]]);
+  return{text:`A ribbon is ${len} m long. You cut off ${cut[0]}/${cut[1]} of it. How long is the piece you cut?`,answer:`${(len*cut[0]/cut[1]).toFixed(2)} m`,hint:`Multiply: ${len} × ${cut[0]}/${cut[1]}`};
+};
+
+// ─── CHAPTER 6: LINEAR EQUATIONS ──────────────────────
+
+QB.ch6_s1 = () => { // Variables and expressions
+  const t=ri(1,3);
+  const a=ri(2,9),b=ri(1,20);
+  if(t===1) return{text:`Write an expression for "5 more than twice a number n."`,answer:`2n + 5`,hint:'Twice a number = 2n; five more means + 5.'};
+  if(t===2) return{text:`Write an expression for "${a} less than ${b} times a number x."`,answer:`${b}x - ${a}`,hint:`"Less than" means subtract.`};
+  return{text:`Simplify: ${a}x + ${b} + ${ri(1,6)}x + ${ri(1,10)}`,answer:`${a+ri(1,6)}x + ${b+ri(1,10)}`,hint:'Combine like terms.'};
+};
+
+QB.ch6_s2 = () => { // Evaluate expressions
+  const a=ri(2,8),b=ri(1,10),x=ri(1,8),t=ri(1,3);
+  if(t===1) return{text:`Evaluate ${a}x + ${b} when x = ${x}.`,answer:`${a*x+b}`,hint:`Substitute x = ${x} and calculate.`};
+  if(t===2){const c=ri(1,5); return{text:`Evaluate ${a}x² + ${c} when x = ${ri(1,4)}.`,answer:`${a*(x*x)+c}`,hint:`Substitute x, then apply exponent before multiplication.`};}
+  const y=ri(1,6); return{text:`Evaluate ${a}x − ${b}y when x = ${x} and y = ${y}.`,answer:`${a*x-b*y}`,hint:'Substitute both variables.'};
+};
+
+QB.ch6_s3 = () => { // One-step equations
+  const x=ri(2,20),t=ri(1,4);
+  if(t===1){const b=ri(1,20);return{text:`Solve: x + ${b} = ${x+b}`,answer:`x = ${x}`,hint:'Subtract the constant from both sides.'};} 
+  if(t===2){const b=ri(1,15);return{text:`Solve: x − ${b} = ${x-b}`,answer:`x = ${x}`,hint:'Add the constant to both sides.'};} 
+  if(t===3){const a=ri(2,12);return{text:`Solve: ${a}x = ${a*x}`,answer:`x = ${x}`,hint:'Divide both sides by the coefficient.'};} 
+  const a=ri(2,8);return{text:`Solve: x/${a} = ${x}`,answer:`x = ${x*a}`,hint:'Multiply both sides by the denominator.'};
+};
+
+QB.ch6_s4 = () => { // Two-step equations
+  const x=ri(1,12),a=ri(2,8),b=ri(1,20);
+  const t=ri(1,2);
+  if(t===1) return{text:`Solve: ${a}x + ${b} = ${a*x+b}`,answer:`x = ${x}`,hint:`Step 1: subtract ${b}. Step 2: divide by ${a}.`};
+  return{text:`Solve: ${a}x − ${b} = ${a*x-b}`,answer:`x = ${x}`,hint:`Step 1: add ${b}. Step 2: divide by ${a}.`};
+};
+
+QB.ch6_s5 = () => { // Equations involving integers
+  const x=pick([-5,-4,-3,-2,-1,1,2,3,4,5]),a=ri(2,6),b=ri(1,15);
+  const t=ri(1,2);
+  if(t===1) return{text:`Solve: ${a}x + ${b} = ${a*x+b}`,answer:`x = ${x}`,hint:`${x<0?'The answer is negative — subtract, then divide by '+a:'Use inverse operations.'}`};
+  return{text:`Solve: ${a}x − ${b} = ${a*x-b}`,answer:`x = ${x}`,hint:'Add to both sides first, then divide.'};
+};
+
+QB.ch6_s6 = () => { // Verify solutions
+  const x=ri(1,10),a=ri(2,6),b=ri(1,15);
+  const correct = a*x+b;
+  const wrong = correct + ri(-5,-1);
+  const isCorrect = Math.random()>0.5;
+  const testVal = isCorrect?x:x+ri(1,3);
+  return{text:`Is x = ${testVal} a solution to ${a}x + ${b} = ${correct}?`,answer:isCorrect?'Yes':'No',type:'mc',choices:['Yes','No'],hint:`Substitute x = ${testVal}: ${a}×${testVal} + ${b} = ${a*testVal+b}`};
+};
+
+QB.ch6_s7 = () => { // Word problems
+  const t=ri(1,4);
+  if(t===1){const perUnit=ri(2,10),fixed=ri(5,30),total=ri(30,120);const n=Math.round((total-fixed)/perUnit);
+    return{text:`A plumber charges a $${fixed} call-out fee plus $${perUnit} per hour. The total bill was $${n*perUnit+fixed}. How many hours did the plumber work?`,answer:`${n} hours`,hint:'Let h = hours. Set up: ' + perUnit + 'h + ' + fixed + ' = ' + (n*perUnit+fixed)};}
+  if(t===2){const price=ri(5,20),items=ri(3,15),budget=price*items+ri(10,40);
+    return{text:`Each notebook costs $${price}. You buy ${items} notebooks and spend $${price*items} in total. How many notebooks did you buy?`,answer:`${items}`,hint:'Divide total by price per notebook.'};}
+  const age=ri(10,30),diff=ri(3,15);
+  return{text:`Sam is ${diff} years older than Alex. If Sam is ${age+diff}, how old is Alex?`,answer:`${age}`,hint:'Alex = Sam − difference.'};
+};
+
+// ─── CHAPTER 7: GEOMETRY AND NETS ─────────────────────
+
+QB.ch7_s1 = () => { // Prisms, pyramids, cylinders, polyhedra
+  const shapes=[
+    {name:'triangular prism',faces:5,edges:9,vertices:6},
+    {name:'rectangular prism',faces:6,edges:12,vertices:8},
+    {name:'square pyramid',faces:5,edges:8,vertices:5},
+    {name:'triangular pyramid',faces:4,edges:6,vertices:4},
+    {name:'pentagonal prism',faces:7,edges:15,vertices:10},
+  ];
+  const s=pick(shapes); const t=ri(1,3);
+  if(t===1) return{text:`How many faces does a ${s.name} have?`,answer:`${s.faces}`,hint:'Count the flat surfaces.'};
+  if(t===2) return{text:`How many edges does a ${s.name} have?`,answer:`${s.edges}`,hint:'Count the line segments where faces meet.'};
+  return{text:`How many vertices does a ${s.name} have?`,answer:`${s.vertices}`,hint:'Count the corners (points).'};
+};
+
+QB.ch7_s2 = () => { // Nets of 3D objects
+  const t=ri(1,3);
+  if(t===1) return{text:`A net is folded to make a cube. How many faces does the net have?`,answer:'6',hint:'A cube has 6 faces.'};
+  if(t===2) return{text:`Which 3D shape has a net consisting of 2 circles and 1 rectangle?`,answer:'Cylinder',type:'mc',choices:['Cone','Cylinder','Prism','Sphere'],hint:'The two circles are the bases; the rectangle wraps around.'};
+  return{text:`A triangular prism has how many faces in its net?`,answer:'5',hint:'2 triangles + 3 rectangles = 5 faces.'};
+};
+
+QB.ch7_s3 = () => { // Surface area
+  const t=ri(1,3);
+  if(t===1){const l=ri(2,10),w=ri(2,8),h=ri(2,8); const sa=2*(l*w+l*h+w*h); return{text:`Find the surface area of a rectangular prism with length ${l} cm, width ${w} cm, and height ${h} cm.`,answer:`${sa} cm²`,hint:'SA = 2(lw + lh + wh)'};}
+  if(t===2){const s=ri(2,10); const sa=6*s*s; return{text:`Find the surface area of a cube with side length ${s} cm.`,answer:`${sa} cm²`,hint:'SA = 6s²'};}
+  const r=ri(2,8),h=ri(3,12); const sa=+(2*Math.PI*r*r + 2*Math.PI*r*h).toFixed(1);
+  return{text:`Find the surface area of a cylinder with radius ${r} cm and height ${h} cm. Use π ≈ 3.14.`,answer:`${+(2*3.14*r*r + 2*3.14*r*h).toFixed(1)} cm²`,hint:'SA = 2πr² + 2πrh'};
+};
+
+QB.ch7_s4 = () => { // Volume of prisms
+  const t=ri(1,3);
+  if(t===1){const l=ri(2,12),w=ri(2,10),h=ri(2,10); return{text:`Find the volume of a rectangular prism: l = ${l} cm, w = ${w} cm, h = ${h} cm.`,answer:`${l*w*h} cm³`,hint:'V = l × w × h'};}
+  if(t===2){const s=ri(2,8); return{text:`Find the volume of a cube with side length ${s} cm.`,answer:`${s*s*s} cm³`,hint:'V = s³'};}
+  const b=ri(3,10),ht=ri(3,10),h=ri(3,10); return{text:`Find the volume of a triangular prism with triangle base ${b} cm, triangle height ${ht} cm, and prism length ${h} cm.`,answer:`${0.5*b*ht*h} cm³`,hint:'V = ½ × base × height × length'};
+};
+
+QB.ch7_s5 = () => { // Volume of cylinders
+  const r=ri(2,8),h=ri(3,15);
+  const vol=+(3.14*r*r*h).toFixed(2);
+  return{text:`Find the volume of a cylinder with radius ${r} cm and height ${h} cm. Use π ≈ 3.14.`,answer:`${vol} cm³`,hint:'V = πr²h'};
+};
+
+QB.ch7_s6 = () => { // Top, front, side views
+  return{text:`When you look at a rectangular prism from directly above, what shape do you see?`,answer:'Rectangle',type:'mc',choices:['Rectangle','Triangle','Circle','Trapezoid'],hint:'The top view of a rectangular prism is a 2D rectangle.'};
+};
+
+// ─── CHAPTER 8: PROBABILITY ───────────────────────────
+
+QB.ch8_s1 = () => { // Theoretical probability
+  const total=pick([6,8,10,12,20]);
+  const fav=ri(1,total-1);
+  return{text:`A bag has ${total} marbles. ${fav} are red. What is the theoretical probability of picking a red marble?`,answer:frac(fav,total),hint:'P(event) = favourable outcomes ÷ total outcomes'};
+};
+
+QB.ch8_s2 = () => { // Experimental probability
+  const trials=ri(20,100), successes=ri(1,trials-1);
+  return{text:`In ${trials} coin flips, heads appeared ${successes} times. What is the experimental probability of heads?`,answer:frac(successes,trials),hint:'Experimental P = successes ÷ total trials'};
+};
+
+QB.ch8_s3 = () => { // Probability as fractions, decimals, percents
+  const n=ri(1,9),d=pick([10,20,4,5,8]);
+  const t=ri(1,3);
+  if(t===1) return{text:`The probability of an event is ${n}/${d}. Express it as a decimal.`,answer:`${(n/d).toFixed(2)}`};
+  if(t===2) return{text:`The probability of an event is ${n}/${d}. Express it as a percent.`,answer:`${(n/d*100).toFixed(1)}%`};
+  const p=ri(10,90); return{text:`The probability of an event is ${p}%. Express it as a fraction in simplest form.`,answer:frac(p,100),hint:'Write as p/100 and simplify.'};
+};
+
+QB.ch8_s4 = () => { // Certain and impossible events
+  const t=ri(1,3);
+  if(t===1) return{text:`What is the probability of rolling a 7 on a standard 6-sided die?`,answer:'0',type:'mc',choices:['0','1','1/6','6/6'],hint:'This is an impossible event.'};
+  if(t===2) return{text:`What is the probability of rolling a number between 1 and 6 (inclusive) on a standard die?`,answer:'1',type:'mc',choices:['1','0','1/6','5/6'],hint:'This is a certain event.'};
+  return{text:`A bag contains only red marbles. If you pick one without looking, what is the probability it is red?`,answer:'1',hint:'Probability of a certain event is 1.'};
+};
+
+QB.ch8_s5 = () => { // Independent and dependent events
+  const r=ri(2,5),b=ri(2,5),total=r+b;
+  const t=ri(1,2);
+  if(t===1) return{text:`A bag has ${r} red and ${b} blue marbles. You draw one marble, replace it, then draw again. What is the probability of drawing red twice?`,answer:frac(r*r,total*total),hint:'Independent: P(A and B) = P(A) × P(B)'};
+  const r2=ri(2,5),b2=ri(2,5),tot=r2+b2;
+  return{text:`A bag has ${r2} red and ${b2} blue marbles. You draw one red marble and do NOT replace it. What is the probability the next draw is also red?`,answer:frac(r2-1,tot-1),hint:'After drawing red, there is one fewer red marble and one fewer total.'};
+};
+
+QB.ch8_s6 = () => { // Complementary events
+  const n=ri(1,9),d=pick([10,12,20]);
+  return{text:`If P(event) = ${n}/${d}, what is the probability of the complementary event (event NOT happening)?`,answer:frac(d-n,d),hint:`P(complement) = 1 − P(event) = ${d}/${d} − ${n}/${d}`};
+};
+
+QB.ch8_s7 = () => { // Sampling and bias
+  return{text:`Which sample is most likely to be unbiased when studying student reading habits?`,answer:'Random selection of 50 students from the whole school',type:'mc',
+    choices:['Ask your 10 closest friends','Survey only students in the library','Random selection of 50 students from the whole school','Ask students who volunteer'],
+    hint:'A random, representative sample avoids bias.'};
+};
+
+// ─── CHAPTER 9: FINANCIAL LITERACY ────────────────────
+
+QB.ch9_s1 = () => { // Unit pricing and best buys
+  const s1=ri(1,5),p1=ri(2,15); const s2=ri(s1+1,s1+4), p2=ri(p1+1,p1+8);
+  const u1=(p1/s1), u2=(p2/s2);
+  const best = u1<u2?`${s1} for $${p1}`:`${s2} for $${p2}`;
+  return{text:`Which is the better buy: ${s1} kg for $${p1} or ${s2} kg for $${p2}?`,answer:best,hint:'Divide price by quantity to find unit price. Lower is better.'};
+};
+
+QB.ch9_s2 = () => { // Sales tax
+  const price=ri(10,200), taxRate=pick([5,6,8,10,12,13,15]);
+  const tax=+(price*taxRate/100).toFixed(2);
+  const t=ri(1,2);
+  if(t===1) return{text:`An item costs $${price}. The sales tax is ${taxRate}%. What is the tax amount?`,answer:`$${tax.toFixed(2)}`,hint:'Tax = price × tax rate'};
+  return{text:`An item costs $${price}. The sales tax is ${taxRate}%. What is the total price including tax?`,answer:`$${(price+tax).toFixed(2)}`,hint:'Total = price + tax'};
+};
+
+QB.ch9_s3 = () => { // Discounts and sale prices
+  const orig=ri(20,300), disc=pick([10,15,20,25,30,40,50]);
+  const discAmt=Math.round(orig*disc/100);
+  const t=ri(1,2);
+  if(t===1) return{text:`A jacket originally costs $${orig}. It is on sale for ${disc}% off. What is the discount amount?`,answer:`$${discAmt}`,hint:'Discount = original × discount rate'};
+  return{text:`A jacket originally costs $${orig}. It is on sale for ${disc}% off. What is the sale price?`,answer:`$${orig-discAmt}`,hint:'Sale price = original − discount'};
+};
+
+QB.ch9_s4 = () => { // Markups
+  const cost=ri(10,100), markup=pick([20,25,30,40,50,60,75,100]);
+  const markupAmt=Math.round(cost*markup/100);
+  const t=ri(1,2);
+  if(t===1) return{text:`A store buys a shirt for $${cost} and marks it up ${markup}%. What is the selling price?`,answer:`$${cost+markupAmt}`,hint:'Selling price = cost + markup'};
+  return{text:`A store sells a shirt for $${cost+markupAmt}. It was bought for $${cost}. What is the markup percentage?`,answer:`${markup}%`,hint:'Markup % = (markup amount ÷ cost) × 100'};
+};
+
+QB.ch9_s5 = () => { // Budgeting basics
+  const income=ri(1000,4000), expenses=pick([0.4,0.5,0.6,0.7,0.75]);
+  const spent=Math.round(income*expenses);
+  const t=ri(1,3);
+  if(t===1) return{text:`Your monthly income is $${income}. You spend ${Math.round(expenses*100)}% of it. How much do you spend?`,answer:`$${spent}`,hint:'Spending = income × percentage'};
+  if(t===2) return{text:`Your monthly income is $${income}. You spend $${spent}. How much money is left?`,answer:`$${income-spent}`,hint:'Remaining = income − spending'};
+  return{text:`Your monthly income is $${income} and your expenses are $${spent}. What percent of your income is left over?`,answer:`${Math.round((income-spent)/income*100)}%`,hint:'Savings % = ((income − expenses) ÷ income) × 100'};
+};
+
+QB.ch9_s6 = () => { // Income and expenses
+  const wage=ri(12,30), hours=ri(20,40), weeks=ri(4,8);
+  const t=ri(1,2);
+  if(t===1) return{text:`You earn $${wage}/hour and work ${hours} hours per week. How much do you earn in ${weeks} weeks?`,answer:`$${wage*hours*weeks}`,hint:'Earnings = hourly rate × hours × weeks'};
+  const monthly_income=ri(2000,5000);
+  const expenses = [ri(500,1200), ri(100,500), ri(50,200), ri(100,300)];
+  const total_exp = expenses.reduce((a,b)=>a+b,0);
+  return{text:`Monthly income: $${monthly_income}. Rent: $${expenses[0]}, Food: $${expenses[1]}, Transport: $${expenses[2]}, Entertainment: $${expenses[3]}. What is left over?`,answer:`$${monthly_income-total_exp}`,hint:'Leftover = income − total expenses'};
+};
+
+QB.ch9_s7 = () => { // Comparing financial choices
+  const t=ri(1,2);
+  if(t===1){const p1=ri(100,500), rate1=pick([3,4,5]), p2=ri(100,500), rate2=pick([1,2,3]);
+    const pay1=Math.round(p1*(1+rate1/100*12)/12), pay2=Math.round(p2*(1+rate2/100*12)/12);
+    return{text:`Plan A: $${p1} at ${rate1}% annual interest. Plan B: $${p2} at ${rate2}% annual interest. Which costs less in total over one year?`,
+      answer:`Plan ${p1*(1+rate1/100) < p2*(1+rate2/100) ? 'A':'B'}`,type:'mc',choices:['Plan A','Plan B'],hint:'Calculate total = principal × (1 + rate) for each.'};}
+  const salary1=ri(30000,60000),bonus1=ri(1000,5000);
+  const salary2=ri(28000,55000),bonus2=ri(5000,15000);
+  return{text:`Job A pays $${salary1}/year + $${bonus1} bonus. Job B pays $${salary2}/year + $${bonus2} bonus. Which pays more?`,
+    answer:`Job ${salary1+bonus1 > salary2+bonus2 ? 'A':'B'}`,type:'mc',choices:['Job A','Job B'],hint:'Add salary and bonus for each, then compare.'};
+};
+
+QB.ch9_s8 = () => { // Consumer decision-making
+  const t=ri(1,2);
+  if(t===1) return{text:`You have $200. A phone costs $180 but earns no money. A textbook costs $40 and may increase future earnings. Which is the better financial decision?`,
+    answer:'The textbook',type:'mc',choices:['The phone','The textbook','Neither','Both are equal'],hint:'Consider long-term value vs immediate cost.'};
+  const price=ri(50,200),maintenance=ri(5,20),duration=ri(3,10);
+  return{text:`Item A costs $${price} upfront with $${maintenance}/year maintenance. Item B costs $${Math.round(price*0.6)} with $${Math.round(maintenance*2.5)}/year maintenance. Over ${duration} years, which is cheaper?`,
+    answer:`Item ${price+maintenance*duration <= Math.round(price*0.6)+Math.round(maintenance*2.5)*duration ? 'A':'B'}`,type:'mc',choices:['Item A','Item B'],hint:`Calculate total cost over ${duration} years for each.`};
+};
+
+// ══════════════════════════════════════════════════════
+//  CHAPTER METADATA
+// ══════════════════════════════════════════════════════
+const CHAPTERS = [
+  { id:1, color:'--ch1', soft:'--ch1s', num:'Ch 1', title:'Percents',
+    desc:'Conversions, percent of a number, increase/decrease, discounts & taxes',
+    subtopics:[
+      {name:'Convert Fractions, Decimals & Percents', bank:'ch1_s1', desc:'~8 question types'},
+      {name:'Percents > 100% and < 1%', bank:'ch1_s2', desc:'Special cases'},
+      {name:'Find a Percent of a Number', bank:'ch1_s3', desc:'Part = Percent × Whole'},
+      {name:'Find the Whole, Part, or Percent', bank:'ch1_s4', desc:'Solving the percent triangle'},
+      {name:'Percent Increase & Decrease', bank:'ch1_s5', desc:'Growth and decay'},
+      {name:'Discounts, Taxes, Tips & Markups', bank:'ch1_s6', desc:'Real-world applications'},
+    ]},
+  { id:2, color:'--ch2', soft:'--ch2s', num:'Ch 2', title:'Squares, Cubes & Pythagorean Theorem',
+    desc:'Powers, roots, and right triangles',
+    subtopics:[
+      {name:'Square and Cube Numbers', bank:'ch2_s1', desc:'Calculating powers'},
+      {name:'Perfect Squares & Cubes', bank:'ch2_s2', desc:'Identifying perfect powers'},
+      {name:'Square Roots & Cube Roots', bank:'ch2_s3', desc:'Inverse operations'},
+      {name:'Estimating Roots', bank:'ch2_s4', desc:'Locating between integers'},
+      {name:'Right Triangles', bank:'ch2_s5', desc:'Identifying right triangles'},
+      {name:'Pythagorean Theorem', bank:'ch2_s6', desc:'a² + b² = c²'},
+      {name:'Finding Missing Side Lengths', bank:'ch2_s7', desc:'Applying the theorem'},
+    ]},
+  { id:3, color:'--ch3', soft:'--ch3s', num:'Ch 3', title:'Rates and Proportions',
+    desc:'Ratios, rates, proportions, and conversions',
+    subtopics:[
+      {name:'Ratios & Equivalent Ratios', bank:'ch3_s1', desc:'Simplifying and comparing'},
+      {name:'Rates & Unit Rates', bank:'ch3_s2', desc:'Per-unit calculations'},
+      {name:'Proportional Relationships', bank:'ch3_s3', desc:'Tables and graphs'},
+      {name:'Solving Proportions', bank:'ch3_s4', desc:'Cross multiplication'},
+      {name:'Scale Drawings & Maps', bank:'ch3_s5', desc:'Real-world scaling'},
+      {name:'Unit Conversions', bank:'ch3_s6', desc:'Metric and time conversions'},
+    ]},
+  { id:4, color:'--ch4', soft:'--ch4s', num:'Ch 4', title:'Adding & Subtracting Fractions',
+    desc:'From equivalent fractions to mixed numbers',
+    subtopics:[
+      {name:'Equivalent Fractions', bank:'ch4_s1', desc:'Scaling fractions'},
+      {name:'Proper, Improper & Mixed Fractions', bank:'ch4_s2', desc:'Converting between forms'},
+      {name:'Add Fractions (Common Denominators)', bank:'ch4_s3', desc:'Same-bottom addition'},
+      {name:'Add Fractions (Unlike Denominators)', bank:'ch4_s4', desc:'Finding LCD'},
+      {name:'Subtract Fractions (Common Denominators)', bank:'ch4_s5', desc:'Same-bottom subtraction'},
+      {name:'Subtract Fractions (Unlike Denominators)', bank:'ch4_s6', desc:'Finding LCD'},
+      {name:'Add & Subtract Mixed Numbers', bank:'ch4_s7', desc:'Whole numbers and fractions'},
+    ]},
+  { id:5, color:'--ch5', soft:'--ch5s', num:'Ch 5', title:'Multiplying & Dividing Fractions',
+    desc:'Products, quotients, and word problems',
+    subtopics:[
+      {name:'Multiply Fractions', bank:'ch5_s1', desc:'Numerator × numerator'},
+      {name:'Multiply Mixed Numbers', bank:'ch5_s2', desc:'Convert and multiply'},
+      {name:'Divide Fractions', bank:'ch5_s3', desc:'Keep, change, flip'},
+      {name:'Divide Mixed Numbers', bank:'ch5_s4', desc:'Convert then divide'},
+      {name:'Reciprocals', bank:'ch5_s5', desc:'Flipping fractions'},
+      {name:'Fraction Word Problems', bank:'ch5_s6', desc:'Real-world applications'},
+    ]},
+  { id:6, color:'--ch6', soft:'--ch6s', num:'Ch 6', title:'Linear Equations',
+    desc:'Algebra from expressions to word problems',
+    subtopics:[
+      {name:'Variables & Algebraic Expressions', bank:'ch6_s1', desc:'Writing expressions'},
+      {name:'Evaluate Expressions', bank:'ch6_s2', desc:'Substitution'},
+      {name:'One-Step Equations', bank:'ch6_s3', desc:'Single operation'},
+      {name:'Two-Step Equations', bank:'ch6_s4', desc:'Two operations'},
+      {name:'Equations with Integers', bank:'ch6_s5', desc:'Negative solutions'},
+      {name:'Verify Solutions', bank:'ch6_s6', desc:'Checking answers'},
+      {name:'Word Problems & Modelling', bank:'ch6_s7', desc:'Setting up equations'},
+    ]},
+  { id:7, color:'--ch7', soft:'--ch7s', num:'Ch 7', title:'Geometry and Nets',
+    desc:'3D shapes, surface area, and volume',
+    subtopics:[
+      {name:'Prisms, Pyramids & Polyhedra', bank:'ch7_s1', desc:'Faces, edges, vertices'},
+      {name:'Nets of 3D Objects', bank:'ch7_s2', desc:'Unfolding shapes'},
+      {name:'Surface Area', bank:'ch7_s3', desc:'SA formulas'},
+      {name:'Volume of Prisms', bank:'ch7_s4', desc:'Rectangular and triangular'},
+      {name:'Volume of Cylinders', bank:'ch7_s5', desc:'πr²h'},
+      {name:'Top, Front & Side Views', bank:'ch7_s6', desc:'2D projections'},
+    ]},
+  { id:8, color:'--ch8', soft:'--ch8s', num:'Ch 8', title:'Probability',
+    desc:'Theoretical, experimental, and compound probability',
+    subtopics:[
+      {name:'Theoretical Probability', bank:'ch8_s1', desc:'Favourable ÷ total'},
+      {name:'Experimental Probability', bank:'ch8_s2', desc:'Results from trials'},
+      {name:'Probability as Fractions, Decimals & Percents', bank:'ch8_s3', desc:'Converting representations'},
+      {name:'Certain & Impossible Events', bank:'ch8_s4', desc:'P = 0 or P = 1'},
+      {name:'Independent & Dependent Events', bank:'ch8_s5', desc:'With and without replacement'},
+      {name:'Complementary Events', bank:'ch8_s6', desc:'P(not A) = 1 − P(A)'},
+      {name:'Sampling & Bias', bank:'ch8_s7', desc:'Representative samples'},
+    ]},
+  { id:9, color:'--ch9', soft:'--ch9s', num:'Ch 9', title:'Financial Literacy',
+    desc:'Budgets, income, discounts, and consumer decisions',
+    subtopics:[
+      {name:'Unit Pricing & Best Buys', bank:'ch9_s1', desc:'Comparing value'},
+      {name:'Sales Tax', bank:'ch9_s2', desc:'Calculating tax'},
+      {name:'Discounts & Sale Prices', bank:'ch9_s3', desc:'Percent off'},
+      {name:'Markups', bank:'ch9_s4', desc:'Cost to selling price'},
+      {name:'Budgeting Basics', bank:'ch9_s5', desc:'Income vs. spending'},
+      {name:'Income & Expenses', bank:'ch9_s6', desc:'Tracking money'},
+      {name:'Comparing Financial Choices', bank:'ch9_s7', desc:'Better deals'},
+      {name:'Consumer Decision-Making', bank:'ch9_s8', desc:'Smart choices'},
+    ]},
+];
+
+// ══════════════════════════════════════════════════════
+//  APP STATE
+// ══════════════════════════════════════════════════════
+let state = {
+  currentChapter: null,
+  quizBanks: [],
+  quizTitle: '',
+  quizDesc: '',
+  questionCount: 10,
+  questions: [],
+  current: 0,
+  correct: 0,
+  wrong: 0,
+  log: [],
+  answered: false,
+};
+
+// ══════════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showHome() {
+  showScreen('home-screen');
+  document.getElementById('header-crumb').textContent = '';
+  document.getElementById('home-btn').style.display = 'none';
+}
+
+function showChapter(chIdx) {
+  const ch = CHAPTERS[chIdx];
+  state.currentChapter = chIdx;
+  const color = `var(${ch.color})`;
+
+  document.getElementById('ch-badge').textContent = ch.id;
+  document.getElementById('ch-badge').style.background = color;
+  document.getElementById('ch-title').textContent = ch.title;
+  document.getElementById('ch-subtitle').textContent = ch.desc;
+  document.getElementById('header-crumb').textContent = ch.num;
+
+  // Unit test button
+  document.getElementById('unit-test-btn').style.background = '';
+  document.getElementById('unit-test-btn').onclick = () => openConfig(
+    ch.subtopics.map(s=>s.bank),
+    `Unit Test — Ch ${ch.id}: ${ch.title}`,
+    `All ${ch.subtopics.length} topics · mixed questions`
+  );
+  document.getElementById('unit-test-btn').style.setProperty('background','var(' + ch.color + ')','');
+  document.getElementById('unit-test-btn').style.background = color;
+
+  // Subtopics
+  const list = document.getElementById('subtopics-list');
+  list.innerHTML = '';
+  ch.subtopics.forEach((st, i) => {
+    const card = document.createElement('div');
+    card.className = 'subtopic-card';
+    card.style.setProperty('--ch-color', color);
+    card.innerHTML = `
+      <div class="subtopic-info">
+        <h4>${i+1}. ${st.name}</h4>
+        <p>${st.desc}</p>
+      </div>
+      <span class="subtopic-arrow">→</span>
+    `;
+    card.onclick = () => openConfig([st.bank], st.name, `Ch ${ch.id} · ${st.desc}`);
+    list.appendChild(card);
+  });
+
+  document.getElementById('home-btn').style.display = '';
+  document.getElementById('chapter-screen').style.setProperty('--ch-color', color);
+  showScreen('chapter-screen');
+}
+
+function openConfig(banks, title, desc) {
+  state.quizBanks = banks;
+  state.quizTitle = title;
+  state.quizDesc = desc;
+  document.getElementById('config-title').textContent = title;
+  document.getElementById('config-desc').textContent = desc;
+  // Reset count buttons
+  document.querySelectorAll('.count-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.v === '10');
+  });
+  state.questionCount = 10;
+  showScreen('config-screen');
+}
+
+function startFinalExam() {
+  const allBanks = CHAPTERS.flatMap(ch => ch.subtopics.map(s => s.bank));
+  openConfig(allBanks, '🎓 Final Exam', 'Mixed questions from all 9 chapters');
+}
+
+function setCount(n) {
+  state.questionCount = n;
+  document.querySelectorAll('.count-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.v) === n);
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  QUIZ LOGIC
+// ══════════════════════════════════════════════════════
+function generateQuestions(banks, count) {
+  const qs = [];
+  for (let i = 0; i < count; i++) {
+    const bank = banks[i % banks.length];
+    try {
+      const q = QB[bank]();
+      qs.push({ ...q, bank, id: i });
+    } catch(e) {
+      console.error('Q gen error', bank, e);
+      qs.push({ text: 'Question generation error — click Skip.', answer: '', id: i });
+    }
+  }
+  return qs;
+}
+
+function startQuiz() {
+  state.questions = generateQuestions(state.quizBanks, state.questionCount);
+  state.current = 0; state.correct = 0; state.wrong = 0; state.log = [];
+  renderQuestion();
+  showScreen('quiz-screen');
+}
+
+function renderQuestion() {
+  const q = state.questions[state.current];
+  const total = state.questions.length;
+  state.answered = false;
+
+  // Progress
+  document.getElementById('progress-fill').style.width = `${(state.current/total)*100}%`;
+  document.getElementById('q-counter').textContent = `Question ${state.current+1} of ${total}`;
+  document.getElementById('live-correct').textContent = `✓ ${state.correct}`;
+  document.getElementById('live-wrong').textContent = `✗ ${state.wrong}`;
+
+  // Hint
+  const hintEl = document.getElementById('q-hint');
+  if (q.hint) { hintEl.textContent = `💡 ${q.hint}`; hintEl.style.display = 'block'; }
+  else { hintEl.style.display = 'none'; }
+
+  document.getElementById('q-text').innerHTML = q.text;
+  document.getElementById('feedback-box').style.display = 'none';
+  document.getElementById('btn-next').style.display = 'none';
+  document.getElementById('btn-skip').style.display = '';
+
+  const area = document.getElementById('q-input-area');
+
+  if (q.type === 'mc') {
+    const choices = q.choices || [];
+    area.innerHTML = `<div class="choices">${choices.map((c,i)=>`
+      <button class="choice-btn" onclick="answerMC(this, '${c.replace(/'/g,"\\'")}')">
+        <span class="choice-letter">${'ABCD'[i]}</span>${c}
+      </button>`).join('')}</div>`;
+  } else {
+    area.innerHTML = `
+      <div class="answer-input-wrap">
+        <input class="answer-input" id="ans-input" type="text" placeholder="Your answer..." autocomplete="off" />
+        <button class="btn-submit" onclick="submitShortAnswer()">Check</button>
+      </div>`;
+    const inp = document.getElementById('ans-input');
+    inp.focus();
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') submitShortAnswer(); });
+  }
+}
+
+function answerMC(btn, chosen) {
+  if (state.answered) return;
+  state.answered = true;
+  const q = state.questions[state.current];
+  const isCorrect = checkAnswer(chosen, q.answer);
+  document.querySelectorAll('.choice-btn').forEach(b => {
+    b.disabled = true;
+    if (checkAnswer(b.textContent.replace(/^[ABCD]/,'').trim(), q.answer)) b.classList.add('correct-ans');
+  });
+  if (!isCorrect) btn.classList.add('wrong-ans');
+  showFeedback(isCorrect, q.answer);
+}
+
+function submitShortAnswer() {
+  if (state.answered) return;
+  const inp = document.getElementById('ans-input');
+  const userAns = inp.value.trim();
+  if (!userAns) return;
+  state.answered = true;
+  inp.disabled = true;
+  document.querySelector('.btn-submit').disabled = true;
+  const q = state.questions[state.current];
+  const isCorrect = checkAnswer(userAns, q.answer);
+  inp.classList.add(isCorrect?'correct':'wrong');
+  showFeedback(isCorrect, q.answer);
+}
+
+function showFeedback(isCorrect, correctAnswer) {
+  const q = state.questions[state.current];
+  if (isCorrect) { state.correct++; } else { state.wrong++; }
+  state.log.push({ q, isCorrect, correct: correctAnswer });
+
+  const fb = document.getElementById('feedback-box');
+  fb.className = `feedback-box ${isCorrect?'correct':'wrong'}`;
+  fb.innerHTML = isCorrect
+    ? `<strong>✓ Correct!</strong> Well done.`
+    : `<strong>✗ Incorrect.</strong> The answer is: <strong>${correctAnswer}</strong>`;
+  fb.style.display = 'block';
+
+  document.getElementById('btn-skip').style.display = 'none';
+  document.getElementById('btn-next').style.display = '';
+  document.getElementById('live-correct').textContent = `✓ ${state.correct}`;
+  document.getElementById('live-wrong').textContent = `✗ ${state.wrong}`;
+}
+
+function skipQuestion() {
+  const q = state.questions[state.current];
+  state.log.push({ q, isCorrect: false, correct: q.answer, skipped: true });
+  state.wrong++;
+  nextQuestion();
+}
+
+function nextQuestion() {
+  state.current++;
+  if (state.current >= state.questions.length) {
+    showResults();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  RESULTS
+// ══════════════════════════════════════════════════════
+function showResults() {
+  const total = state.questions.length;
+  const pct = Math.round((state.correct/total)*100);
+  let emoji = '😕', msg = 'Keep practising!';
+  if (pct >= 90) { emoji = '🏆'; msg = 'Outstanding!'; }
+  else if (pct >= 75) { emoji = '🎉'; msg = 'Great work!'; }
+  else if (pct >= 60) { emoji = '👍'; msg = 'Good effort!'; }
+  else if (pct >= 40) { emoji = '📚'; msg = 'Keep studying!'; }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = msg;
+  document.getElementById('res-subtitle').textContent = state.quizTitle;
+  document.getElementById('res-pct').textContent = `${pct}%`;
+  document.getElementById('res-correct').textContent = state.correct;
+  document.getElementById('res-total').textContent = total;
+  document.getElementById('res-wrong').textContent = state.wrong;
+  document.getElementById('review-list').style.display = 'none';
+  document.getElementById('review-list').innerHTML = '';
+
+  const circle = document.querySelector('.score-circle');
+  if (pct >= 75) { circle.style.borderColor = 'var(--green)'; circle.style.background = 'var(--green-soft)';
+    document.querySelector('.score-pct').style.color = 'var(--green)'; }
+  else if (pct >= 60) { circle.style.borderColor = 'var(--amber)'; circle.style.background = 'var(--amber-soft)';
+    document.querySelector('.score-pct').style.color = 'var(--amber)'; }
+  else { circle.style.borderColor = 'var(--red)'; circle.style.background = 'var(--red-soft)';
+    document.querySelector('.score-pct').style.color = 'var(--red)'; }
+
+  showScreen('results-screen');
+}
+
+function showReview() {
+  const list = document.getElementById('review-list');
+  if (list.style.display === 'block') { list.style.display = 'none'; return; }
+  list.innerHTML = state.log.map((entry, i) => `
+    <div class="review-item ${entry.isCorrect?'correct':'wrong'}">
+      <div class="rv-q">Q${i+1}: ${entry.q.text}</div>
+      ${entry.isCorrect
+        ? `<div class="rv-a">✓ Your answer was correct: ${entry.correct}</div>`
+        : `<div class="rv-a">✗ ${entry.skipped?'Skipped':'Wrong'}</div>
+           <div class="rv-correct">Correct answer: ${entry.correct}</div>`}
+    </div>`).join('');
+  list.style.display = 'block';
+}
+
+function retryQuiz() {
+  startQuiz();
+}
+
+// ══════════════════════════════════════════════════════
+//  BUILD HOME PAGE
+// ══════════════════════════════════════════════════════
+function buildHome() {
+  const grid = document.getElementById('chapters-grid');
+  grid.innerHTML = CHAPTERS.map((ch, i) => `
+    <div class="chapter-card" onclick="showChapter(${i})"
+         style="--ch-color:var(${ch.color}); --ch-soft:var(${ch.soft})">
+      <div class="chapter-num" style="color:var(${ch.color})">${ch.num}</div>
+      <h3>${ch.title}</h3>
+      <p>${ch.desc}</p>
+      <div class="chapter-topics">
+        ${ch.subtopics.slice(0,4).map(s=>`<span class="topic-chip" style="background:var(${ch.soft});color:var(${ch.color})">${s.name}</span>`).join('')}
+        ${ch.subtopics.length > 4 ? `<span class="topic-chip" style="background:var(${ch.soft});color:var(${ch.color})">+${ch.subtopics.length-4} more</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// Init
+buildHome();
+showHome();
+document.getElementById('home-btn').style.display = 'none';
+</script>
+</body>
+</html>
